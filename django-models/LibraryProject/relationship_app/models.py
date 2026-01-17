@@ -13,6 +13,27 @@ class Author(models.Model):
 
 
 # --------------------
+# Library Model
+# --------------------
+class Library(models.Model):
+    name = models.CharField(max_length=150)
+
+    def __str__(self):
+        return self.name
+
+
+# --------------------
+# Librarian Model
+# --------------------
+class Librarian(models.Model):
+    name = models.CharField(max_length=100)
+    library = models.OneToOneField(Library, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.name
+
+
+# --------------------
 # User Profile Model (Roles)
 # --------------------
 class UserProfile(models.Model):
@@ -34,7 +55,7 @@ class UserProfile(models.Model):
 
 
 # --------------------
-# Book Model (Permissions)
+# Book Model (Custom Permissions)
 # --------------------
 class Book(models.Model):
     title = models.CharField(max_length=200)
