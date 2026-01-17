@@ -1,30 +1,17 @@
-from django.shortcuts import render
-from django.contrib.auth.decorators import user_passes_test
-from .models import UserProfile
+from django.http import HttpResponse
+from django.contrib.auth.decorators import permission_required
 
 
-def is_admin(user):
-    return hasattr(user, 'userprofile') and user.userprofile.role == 'Admin'
+@permission_required('relationship_app.can_add_book')
+def add_book(request):
+    return HttpResponse("Add Book View - Permission Granted")
 
 
-def is_librarian(user):
-    return hasattr(user, 'userprofile') and user.userprofile.role == 'Librarian'
+@permission_required('relationship_app.can_change_book')
+def edit_book(request, book_id):
+    return HttpResponse("Edit Book View - Permission Granted")
 
 
-def is_member(user):
-    return hasattr(user, 'userprofile') and user.userprofile.role == 'Member'
-
-
-@user_passes_test(is_admin)
-def admin_view(request):
-    return render(request, 'relationship_app/admin_view.html')
-
-
-@user_passes_test(is_librarian)
-def librarian_view(request):
-    return render(request, 'relationship_app/librarian_view.html')
-
-
-@user_passes_test(is_member)
-def member_view(request):
-    return render(request, 'relationship_app/member_view.html')
+@permission_required('relationship_app.can_delete_book')
+def delete_book(request, book_id):
+    return HttpResponse("Delete Book View - Permission Granted")
