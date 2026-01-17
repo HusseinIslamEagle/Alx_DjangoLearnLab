@@ -1,5 +1,8 @@
 from django.shortcuts import render, redirect
-from django.contrib.auth.decorators import user_passes_test, permission_required
+from django.contrib.auth.decorators import (
+    user_passes_test,
+    permission_required
+)
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import login
 from django.http import HttpResponse
@@ -28,6 +31,18 @@ def register(request):
         form = UserCreationForm()
 
     return render(request, 'relationship_app/register.html', {'form': form})
+
+
+# --------------------
+# Books list (FUNCTION-BASED VIEW)
+# --------------------
+def list_books(request):
+    books = Book.objects.all()
+    return render(
+        request,
+        'relationship_app/list_books.html',
+        {'books': books}
+    )
 
 
 # --------------------
