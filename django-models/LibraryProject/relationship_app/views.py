@@ -1,6 +1,9 @@
 from django.http import HttpResponse
 from django.contrib.auth.decorators import permission_required
+from django.http import HttpResponse
 
+def home(request):
+    return HttpResponse("Welcome to the Django App")
 
 @permission_required('relationship_app.can_add_book')
 def add_book(request):
