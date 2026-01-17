@@ -1,13 +1,11 @@
 from django.shortcuts import render, redirect
-from django.contrib.auth.decorators import (
-    user_passes_test,
-    permission_required
-)
+from django.contrib.auth.decorators import user_passes_test, permission_required
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import login
 from django.http import HttpResponse
+from django.views.generic.detail import DetailView
 
-from .models import UserProfile, Book
+from .models import UserProfile, Book, Library
 
 
 # --------------------
@@ -34,7 +32,7 @@ def register(request):
 
 
 # --------------------
-# Books list (FUNCTION-BASED VIEW)
+# Books list (Function-based view)
 # --------------------
 def list_books(request):
     books = Book.objects.all()
@@ -43,6 +41,15 @@ def list_books(request):
         'relationship_app/list_books.html',
         {'books': books}
     )
+
+
+# --------------------
+# Library detail (Class-based view)
+# --------------------
+class LibraryDetailView(DetailView):
+    model = Library
+    template_name = 'relationship_app/library_detail.html'
+    context_object_name = 'library'
 
 
 # --------------------
