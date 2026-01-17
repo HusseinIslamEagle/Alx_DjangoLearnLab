@@ -5,7 +5,9 @@ from django.contrib.auth import login
 from django.http import HttpResponse
 from django.views.generic.detail import DetailView
 
-from .models import UserProfile, Book, Library
+from .models import Library
+from .models import UserProfile, Book
+
 
 
 # --------------------
