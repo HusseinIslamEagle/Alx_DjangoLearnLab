@@ -6,7 +6,6 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-change-this-key'
 
 
-# REQUIRED BY CHECKER
 DEBUG = False
 
 ALLOWED_HOSTS = []
@@ -93,6 +92,9 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # Force HTTPS
 SECURE_SSL_REDIRECT = True
 
+# Tell Django to trust X-Forwarded-Proto header (for HTTPS behind proxy)
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+
 # HTTP Strict Transport Security (HSTS)
 SECURE_HSTS_SECONDS = 31536000
 SECURE_HSTS_INCLUDE_SUBDOMAINS = True
@@ -106,6 +108,7 @@ CSRF_COOKIE_SECURE = True
 X_FRAME_OPTIONS = 'DENY'
 SECURE_CONTENT_TYPE_NOSNIFF = True
 SECURE_BROWSER_XSS_FILTER = True
+
 
 # Custom User Model (required by previous tasks)
 AUTH_USER_MODEL = 'bookshelf.CustomUser'
