@@ -1,5 +1,5 @@
 from django.db import models
-from django.contrib.auth.models import AbstractUser, BaseUserManager
+from django.contrib.auth.models import AbstractUser
 
 
 class CustomUser(AbstractUser):
@@ -10,16 +10,17 @@ class CustomUser(AbstractUser):
         return self.username
 
 
-class Article(models.Model):
+class Book(models.Model):
     title = models.CharField(max_length=200)
-    content = models.TextField()
+    author = models.CharField(max_length=200)
+    published_date = models.DateField(null=True, blank=True)
 
     class Meta:
         permissions = [
-            ("can_view", "Can view article"),
-            ("can_create", "Can create article"),
-            ("can_edit", "Can edit article"),
-            ("can_delete", "Can delete article"),
+            ("can_view", "Can view book"),
+            ("can_create", "Can create book"),
+            ("can_edit", "Can edit book"),
+            ("can_delete", "Can delete book"),
         ]
 
     def __str__(self):
