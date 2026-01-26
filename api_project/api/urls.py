@@ -7,9 +7,6 @@ router = DefaultRouter()
 router.register(r'books_all', BookViewSet, basename='book_all')
 
 urlpatterns = [
-    # Route for the BookList view (ListAPIView)
     path('books/', BookList.as_view(), name='book-list'),
-
-    # Include router URLs for CRUD operations
     path('', include(router.urls)),
 ]
