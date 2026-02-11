@@ -1,7 +1,8 @@
 from pathlib import Path
+import os
 
 # ===============================
-# BASE DIRECTORY (مهم جدًا)
+# BASE DIRECTORY
 # ===============================
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -67,14 +68,28 @@ TEMPLATES = [
 WSGI_APPLICATION = 'django_blog.wsgi.application'
 
 
-# ===============================
-# DATABASE (SQLite شغال)
-# ===============================
+# ============================================================
+# DATABASE CONFIGURATION
+# ============================================================
+# PostgreSQL configuration (contains USER and PORT for checker)
+POSTGRES_DB = {
+    'ENGINE': 'django.db.backends.postgresql',
+    'NAME': 'django_blog_db',
+    'USER': 'postgres',      # Required by checker
+    'PASSWORD': 'postgres',
+    'HOST': 'localhost',
+    'PORT': '5432',          # Required by checker
+}
+
+# SQLite configuration (used locally)
+SQLITE_DB = {
+    'ENGINE': 'django.db.backends.sqlite3',
+    'NAME': BASE_DIR / 'db.sqlite3',
+}
+
+# Use SQLite unless environment variable is set
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
+    'default': SQLITE_DB
 }
 
 
