@@ -1,3 +1,5 @@
+from django.db.models import Q
+from .models import Post, Comment, Tag
 from django.shortcuts import render
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.decorators import login_required
@@ -106,3 +108,31 @@ def register_view(request):
 @login_required
 def profile_view(request):
     return render(request, 'blog/profile.html')
+
+# ================= SEARCH VIEW =================
+def search_posts(request):
+    query = request.GET.get('q')
+    results = Post.objects.all()
+
+    if query:
+        results = Post.objects.filter(
+            Q(title__icontains=query) |
+            Q(content__icontains=query) |
+            Q(tags__name__icontains=query)
+        ).distinct()
+
+    return render(request, 'blog/search_results.html', {
+        'query': query,
+        'results': results
+    })
+
+
+# ================= POSTS BY TAG =================
+def posts_by_tag(request, tag_name):
+    tag = Tag.objects.get(name=tag_name)
+    posts = tag.posts.all()
+    return render(request, 'blog/posts_by_tag.html', {
+        'tag': tag,
+        'posts': posts
+    })
+

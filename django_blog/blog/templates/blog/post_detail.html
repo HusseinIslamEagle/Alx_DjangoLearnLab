@@ -15,3 +15,19 @@
 <a href="{% url 'post-list' %}">Back to Posts</a>
 
 {% endblock %}
+
+<h3>Tags:</h3>
+{% for tag in object.tags.all %}
+    <a href="{% url 'posts-by-tag' tag.name %}">{{ tag.name }}</a>
+{% empty %}
+    No tags
+{% endfor %}
+
+<hr>
+
+<h3>Search</h3>
+<form method="GET" action="{% url 'search' %}">
+    <input type="text" name="q" placeholder="Search...">
+    <button type="submit">Search</button>
+</form>
+
