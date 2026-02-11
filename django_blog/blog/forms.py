@@ -1,24 +1,12 @@
 from django import forms
-from django.contrib.auth.forms import UserCreationForm
-from django.contrib.auth.models import User
+from .models import Post
 
 
-class RegisterForm(UserCreationForm):
+class PostForm(forms.ModelForm):
     """
-    Custom registration form extending Django's UserCreationForm.
-    Adds email field.
+    ModelForm for creating and updating posts.
     """
-    email = forms.EmailField(required=True)
 
     class Meta:
-        model = User
-        fields = ['username', 'email', 'password1', 'password2']
-
-
-class ProfileUpdateForm(forms.ModelForm):
-    """
-    Form to update user profile information.
-    """
-    class Meta:
-        model = User
-        fields = ['username', 'email']
+        model = Post
+        fields = ['title', 'content']
