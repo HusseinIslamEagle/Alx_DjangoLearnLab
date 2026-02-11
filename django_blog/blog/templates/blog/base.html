@@ -1,14 +1,11 @@
-{% load static %}
 <!DOCTYPE html>
 <html>
 <head>
     <title>Django Blog</title>
-    <link rel="stylesheet" href="{% static 'blog/style.css' %}">
 </head>
 <body>
-    <h1>Welcome to Django Blog 🚀</h1>
-    <p>Your blog project is successfully set up!</p>
-
-    <script src="{% static 'blog/script.js' %}"></script>
+    <h1>Django Blog Authentication System</h1>
+    <hr>
+    {% block content %}{% endblock %}
 </body>
 </html>
