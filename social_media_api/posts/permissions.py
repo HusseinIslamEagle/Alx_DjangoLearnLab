@@ -2,9 +2,6 @@ from rest_framework import permissions
 
 
 class IsOwnerOrReadOnly(permissions.BasePermission):
-    """
-    Custom permission to allow only owners to edit/delete
-    """
 
     def has_object_permission(self, request, view, obj):
         if request.method in permissions.SAFE_METHODS:
