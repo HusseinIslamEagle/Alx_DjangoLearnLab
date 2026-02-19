@@ -5,6 +5,8 @@ from rest_framework.decorators import api_view, permission_classes
 from django.contrib.auth import authenticate
 from .models import CustomUser
 from .serializers import RegisterSerializer, LoginSerializer, ProfileSerializer
+from notifications.models import Notification
+
 
 
 class RegisterView(generics.CreateAPIView):
@@ -47,6 +49,11 @@ def follow_user(request, user_id):
             )
 
         request.user.following.add(user_to_follow)
+        Notification.objects.create(
+    recipient=user_to_follow,
+    actor=request.user,
+    verb="started following you"
+)
 
         return Response(
             {"message": f"You are now following {user_to_follow.username}"}

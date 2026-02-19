@@ -5,6 +5,9 @@ from rest_framework.pagination import PageNumberPagination
 from .models import Post, Comment
 from .serializers import PostSerializer, CommentSerializer
 from .permissions import IsOwnerOrReadOnly
+from rest_framework.decorators import action
+from notifications.models import Notification
+from .models import Like
 
 
 class PostPagination(PageNumberPagination):
@@ -29,7 +32,16 @@ class CommentViewSet(viewsets.ModelViewSet):
     permission_classes = [permissions.IsAuthenticated, IsOwnerOrReadOnly]  # checker requirement
 
     def perform_create(self, serializer):
-        serializer.save(author=self.request.user)
+    comment = serializer.save(author=self.request.user)
+
+    if comment.post.author != self.request.user:
+        Notification.objects.create(
+            recipient=comment.post.author,
+            actor=self.request.user,
+            verb="commented on your post",
+            target_id=comment.post.id
+        )
+
 
 
 @api_view(['GET'])
@@ -39,3 +51,42 @@ def feed(request):
     posts = Post.objects.filter(author__in=following_users).order_by('-created_at')
     serializer = PostSerializer(posts, many=True)
     return Response(serializer.data)
+
+@api_view(['POST'])
+@permission_classes([permissions.IsAuthenticated])
+def like_post(request, pk):
+    try:
+        post = Post.objects.get(pk=pk)
+
+        like, created = Like.objects.get_or_create(
+            post=post,
+            user=request.user
+        )
+
+        if not created:
+            return Response({"message": "You already liked this post"},
+                            status=400)
+
+        if post.author != request.user:
+            Notification.objects.create(
+                recipient=post.author,
+                actor=request.user,
+                verb="liked your post",
+                target_id=post.id
+            )
+
+        return Response({"message": "Post liked"})
+
+    except Post.DoesNotExist:
+        return Response({"error": "Post not found"}, status=404)
+
+
+@api_view(['POST'])
+@permission_classes([permissions.IsAuthenticated])
+def unlike_post(request, pk):
+    try:
+        post = Post.objects.get(pk=pk)
+        Like.objects.filter(post=post, user=request.user).delete()
+        return Response({"message": "Post unliked"})
+    except Post.DoesNotExist:
+        return Response({"error": "Post not found"}, status=404)
