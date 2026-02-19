@@ -1,22 +1,29 @@
+import os
 from pathlib import Path
+from dotenv import load_dotenv
+
+# ======================================
+# Base Directory
+# ======================================
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+# Load .env file
+load_dotenv()
 
-# ===============================
-# SECURITY
-# ===============================
+# ======================================
+# Security
+# ======================================
 
-SECRET_KEY = 'django-insecure-change-this-key-in-production'
+SECRET_KEY = os.getenv("SECRET_KEY", "dev-secret-key")
 
-DEBUG = True
+DEBUG = os.getenv("DEBUG", "True") == "True"
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS", "127.0.0.1,localhost").split(",")
 
-
-# ===============================
-# APPLICATIONS
-# ===============================
+# ======================================
+# Applications
+# ======================================
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -26,7 +33,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
-    # Third-party apps
+    # Third-party
     'rest_framework',
     'rest_framework.authtoken',
     'django_filters',
@@ -37,13 +44,13 @@ INSTALLED_APPS = [
     'notifications',
 ]
 
-
-# ===============================
-# MIDDLEWARE
-# ===============================
+# ======================================
+# Middleware
+# ======================================
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -52,17 +59,11 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-
-# ===============================
-# URL CONFIGURATION
-# ===============================
-
 ROOT_URLCONF = 'social_media_api.urls'
 
-
-# ===============================
-# TEMPLATES
-# ===============================
+# ======================================
+# Templates
+# ======================================
 
 TEMPLATES = [
     {
@@ -80,29 +81,34 @@ TEMPLATES = [
     },
 ]
 
-
-# ===============================
-# WSGI
-# ===============================
-
 WSGI_APPLICATION = 'social_media_api.wsgi.application'
 
+# ======================================
+# Database (SQLite for Dev / PostgreSQL for Prod)
+# ======================================
 
-# ===============================
-# DATABASE
-# ===============================
-
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+if DEBUG:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
+        }
     }
-}
+else:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql',
+            'NAME': os.getenv("DB_NAME"),
+            'USER': os.getenv("DB_USER"),
+            'PASSWORD': os.getenv("DB_PASSWORD"),
+            'HOST': os.getenv("DB_HOST"),
+            'PORT': os.getenv("DB_PORT", "5432"),
+        }
+    }
 
-
-# ===============================
-# PASSWORD VALIDATION
-# ===============================
+# ======================================
+# Password Validation
+# ======================================
 
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -119,47 +125,48 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
-# ===============================
-# INTERNATIONALIZATION
-# ===============================
+# ======================================
+# Internationalization
+# ======================================
 
 LANGUAGE_CODE = 'en-us'
-
 TIME_ZONE = 'UTC'
-
 USE_I18N = True
-
 USE_TZ = True
 
+# ======================================
+# Static & Media
+# ======================================
 
-# ===============================
-# STATIC & MEDIA FILES
-# ===============================
-
-STATIC_URL = 'static/'
+STATIC_URL = '/static/'
+STATIC_ROOT = BASE_DIR / 'staticfiles'
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
-# ===============================
-# DEFAULT PRIMARY KEY FIELD
-# ===============================
+# ======================================
+# Security Settings (Production Only)
+# ======================================
 
-DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+if not DEBUG:
+    SECURE_BROWSER_XSS_FILTER = True
+    SECURE_CONTENT_TYPE_NOSNIFF = True
+    SECURE_SSL_REDIRECT = True
+    SESSION_COOKIE_SECURE = True
+    CSRF_COOKIE_SECURE = True
+    X_FRAME_OPTIONS = 'DENY'
 
-
-# ===============================
-# CUSTOM USER MODEL
-# ===============================
+# ======================================
+# Custom User Model
+# ======================================
 
 AUTH_USER_MODEL = 'accounts.CustomUser'
 
-
-# ===============================
-# DJANGO REST FRAMEWORK
-# ===============================
+# ======================================
+# Django REST Framework
+# ======================================
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
@@ -175,3 +182,9 @@ REST_FRAMEWORK = {
         'rest_framework.filters.SearchFilter',
     ],
 }
+
+# ======================================
+# Default Primary Key
+# ======================================
+
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
