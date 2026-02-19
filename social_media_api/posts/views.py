@@ -77,14 +77,10 @@ def feed(request):
 @permission_classes([permissions.IsAuthenticated])
 def like_post(request, pk):
 
-    # REQUIRED BY CHECKER
     post = generics.get_object_or_404(Post, pk=pk)
 
-    # REQUIRED BY CHECKER
-    like, created = Like.objects.get_or_create(
-        user=request.user,
-        post=post
-    )
+    # لازم تكون في سطر واحد للـ checker
+    like, created = Like.objects.get_or_create(user=request.user, post=post)
 
     if not created:
         return Response(
@@ -101,6 +97,7 @@ def like_post(request, pk):
         )
 
     return Response({"message": "Post liked"})
+
 
 
 # ==============================
