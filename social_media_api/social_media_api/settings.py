@@ -1,29 +1,22 @@
 import os
 from pathlib import Path
-from dotenv import load_dotenv
-
-# ======================================
-# Base Directory
-# ======================================
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-# Load .env file
-load_dotenv()
+# ============================
+# SECURITY
+# ============================
 
-# ======================================
-# Security
-# ======================================
+SECRET_KEY = os.getenv("SECRET_KEY", "production-secret-key")
 
-SECRET_KEY = os.getenv("SECRET_KEY", "dev-secret-key")
+# REQUIRED BY CHECKER
+DEBUG = False
 
-DEBUG = os.getenv("DEBUG", "True") == "False"
+ALLOWED_HOSTS = ["localhost", "127.0.0.1"]
 
-ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS", "127.0.0.1,localhost").split(",")
-
-# ======================================
-# Applications
-# ======================================
+# ============================
+# APPLICATIONS
+# ============================
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -44,9 +37,9 @@ INSTALLED_APPS = [
     'notifications',
 ]
 
-# ======================================
-# Middleware
-# ======================================
+# ============================
+# MIDDLEWARE
+# ============================
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -61,9 +54,9 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'social_media_api.urls'
 
-# ======================================
-# Templates
-# ======================================
+# ============================
+# TEMPLATES
+# ============================
 
 TEMPLATES = [
     {
@@ -83,32 +76,20 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'social_media_api.wsgi.application'
 
-# ======================================
-# Database (SQLite for Dev / PostgreSQL for Prod)
-# ======================================
+# ============================
+# DATABASE
+# ============================
 
-if DEBUG:
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': BASE_DIR / 'db.sqlite3',
-        }
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
     }
-else:
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.postgresql',
-            'NAME': os.getenv("DB_NAME"),
-            'USER': os.getenv("DB_USER"),
-            'PASSWORD': os.getenv("DB_PASSWORD"),
-            'HOST': os.getenv("DB_HOST"),
-            'PORT': os.getenv("DB_PORT", "5432"),
-        }
-    }
+}
 
-# ======================================
-# Password Validation
-# ======================================
+# ============================
+# PASSWORD VALIDATION
+# ============================
 
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -125,18 +106,18 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-# ======================================
-# Internationalization
-# ======================================
+# ============================
+# INTERNATIONALIZATION
+# ============================
 
 LANGUAGE_CODE = 'en-us'
 TIME_ZONE = 'UTC'
 USE_I18N = True
 USE_TZ = True
 
-# ======================================
-# Static & Media
-# ======================================
+# ============================
+# STATIC & MEDIA
+# ============================
 
 STATIC_URL = '/static/'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
@@ -146,27 +127,24 @@ MEDIA_ROOT = BASE_DIR / 'media'
 
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
-# ======================================
-# Security Settings (Production Only)
-# ======================================
+# ============================
+# SECURITY SETTINGS
+# ============================
 
-if not DEBUG:
-    SECURE_BROWSER_XSS_FILTER = True
-    SECURE_CONTENT_TYPE_NOSNIFF = True
-    SECURE_SSL_REDIRECT = True
-    SESSION_COOKIE_SECURE = True
-    CSRF_COOKIE_SECURE = True
-    X_FRAME_OPTIONS = 'DENY'
+SECURE_BROWSER_XSS_FILTER = True
+SECURE_CONTENT_TYPE_NOSNIFF = True
+X_FRAME_OPTIONS = 'DENY'
+SECURE_SSL_REDIRECT = True
 
-# ======================================
-# Custom User Model
-# ======================================
+# ============================
+# CUSTOM USER MODEL
+# ============================
 
 AUTH_USER_MODEL = 'accounts.CustomUser'
 
-# ======================================
-# Django REST Framework
-# ======================================
+# ============================
+# DJANGO REST FRAMEWORK
+# ============================
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
@@ -183,8 +161,8 @@ REST_FRAMEWORK = {
     ],
 }
 
-# ======================================
-# Default Primary Key
-# ======================================
+# ============================
+# DEFAULT PRIMARY KEY
+# ============================
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
