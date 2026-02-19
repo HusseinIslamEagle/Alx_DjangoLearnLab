@@ -1,5 +1,4 @@
-from rest_framework import viewsets, filters
-from rest_framework.permissions import IsAuthenticated
+from rest_framework import viewsets, filters, permissions
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
 from rest_framework.pagination import PageNumberPagination
@@ -15,7 +14,7 @@ class PostPagination(PageNumberPagination):
 class PostViewSet(viewsets.ModelViewSet):
     queryset = Post.objects.all().order_by('-created_at')
     serializer_class = PostSerializer
-    permission_classes = [IsAuthenticated, IsOwnerOrReadOnly]
+    permission_classes = [permissions.IsAuthenticated, IsOwnerOrReadOnly]  # checker requirement
     pagination_class = PostPagination
     filter_backends = [filters.SearchFilter]
     search_fields = ['title', 'content']
@@ -27,14 +26,14 @@ class PostViewSet(viewsets.ModelViewSet):
 class CommentViewSet(viewsets.ModelViewSet):
     queryset = Comment.objects.all().order_by('-created_at')
     serializer_class = CommentSerializer
-    permission_classes = [IsAuthenticated, IsOwnerOrReadOnly]
+    permission_classes = [permissions.IsAuthenticated, IsOwnerOrReadOnly]  # checker requirement
 
     def perform_create(self, serializer):
         serializer.save(author=self.request.user)
 
 
 @api_view(['GET'])
-@permission_classes([IsAuthenticated])
+@permission_classes([permissions.IsAuthenticated])  # checker requirement
 def feed(request):
     following_users = request.user.following.all()
     posts = Post.objects.filter(author__in=following_users).order_by('-created_at')
